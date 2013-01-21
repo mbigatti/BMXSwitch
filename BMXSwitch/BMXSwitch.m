@@ -191,7 +191,11 @@
 - (void)setContentImage:(UIImage *)contentImage forState:(UIControlState)state
 {
     NSNumber *key = [NSNumber numberWithInteger: state];
-    [_contentImages setObject: contentImage forKey: key];
+    if (contentImage != nil) {
+        [_contentImages setObject: contentImage forKey: key];
+    } else {
+        [_contentImages removeObjectForKey: key];
+    }
     
     _contentImageSize = contentImage.size;
     
@@ -208,10 +212,26 @@
 - (void)setKnobImage:(UIImage *)knobImage forState:(UIControlState)state
 {
     NSNumber *key = [NSNumber numberWithInteger: state];
-    [_knobImages setObject: knobImage forKey: key];
+    if (knobImage != nil) {
+        [_knobImages setObject: knobImage forKey: key];
+    } else {
+        [_knobImages removeObjectForKey: key];
+    }
     
     _knobImageSize = knobImage.size;
     [self refreshKnobImage];
+    [self repositionLayers];
+}
+
+- (void)setKnobOffsetX:(CGFloat)knobOffsetX
+{
+    _knobOffsetX = knobOffsetX;
+    [self repositionLayers];
+}
+
+- (void)setKnobOffsetY:(CGFloat)knobOffsetY
+{
+    _knobOffsetY = knobOffsetY;
     [self repositionLayers];
 }
 
@@ -241,6 +261,7 @@
     } else {
         _contentLayer.transform = CATransform3DIdentity;
         _knobLayer.transform = CATransform3DIdentity;
+        
     }
 }
 
