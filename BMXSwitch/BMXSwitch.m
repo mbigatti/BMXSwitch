@@ -1,22 +1,25 @@
 //
 //  BMSwitch.m
+//  BMSwitch
 //
 //  Created by Massimiliano Bigatti on 10/01/13.
 //  Copyright (c) 2013 Massimiliano Bigatti. All rights reserved.
 //
 
 #import "BMXSwitch.h"
+#import "BMXSwitchLayer.h"
 #import <QuartzCore/QuartzCore.h>
 
+#define BMXLAYER ((BMXSwitchLayer*)self.layer)
+
+@interface BMXSwitch()
+
+@end
+
+
 @implementation BMXSwitch {
-    CALayer *_topLayer;
-    CALayer *_contentLayer;
-    CALayer *_knobLayer;
-    CALayer *_mask;
-    
     CGFloat _dragThreshold;
     CGSize _knobImageSize;
-    CGSize _contentImageSize;
     
     NSMutableDictionary *_knobImages;
     NSMutableDictionary *_contentImages;
@@ -24,6 +27,11 @@
 
 
 #pragma mark - Init
+
++ (Class)layerClass
+{
+    return [BMXSwitchLayer class];
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -50,34 +58,6 @@
     
     self.backgroundColor = [UIColor clearColor];
     
-    //
-    //
-    //
-    _contentLayer = [CALayer layer];
-    _contentLayer.contentsScale = [[UIScreen mainScreen] scale];
-    [self.layer addSublayer: _contentLayer];
-    
-    //
-    //
-    //
-    _topLayer = [CALayer layer];
-    _topLayer.contentsScale = [[UIScreen mainScreen] scale];
-    _topLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    [self.layer addSublayer: _topLayer];
-    
-    //
-    //
-    //
-    _mask = [CALayer layer];
-    _mask.contentsScale = [[UIScreen mainScreen] scale];
-    
-    //
-    //
-    //
-    _knobLayer = [CALayer layer];
-    _knobLayer.contentsScale = [[UIScreen mainScreen] scale];
-    [self.layer addSublayer: _knobLayer];
-    
     {
         UITapGestureRecognizer *gr = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(viewTapped:)];
         
@@ -91,19 +71,22 @@
     }
 }
 
+- (void)didMoveToWindow
+{
+    BMXLAYER.contentsScale = [UIScreen mainScreen].scale;
+}
+
 
 #pragma mark - Gesture Recognizer callbacks
 
 - (void)viewTapped:(UITapGestureRecognizer*)gr
 {
-    self.highlighted = NO;
-    
-    [self refreshContentImage];
-    [self refreshKnobImage];
-    
-    [self toggleAnimated: YES];
-    
-    [self sendActionsForControlEvents: UIControlEventValueChanged];
+    if (gr.state == UIGestureRecognizerStateRecognized) {
+        self.highlighted = NO;
+        
+        [self toggleAnimated: YES];
+        [self sendActionsForControlEvents: UIControlEventValueChanged];
+    }
 }
 
 - (void)viewPanned:(UIPanGestureRecognizer*)gr
@@ -117,23 +100,21 @@
         [CATransaction setDisableActions: YES];
         
         if (_on) {
-            CGFloat xx = _canvasImage.size.width - _knobImageSize.width - _knobOffsetX * 2;
+            CGFloat xx = _canvasImage.size.width - _knobImageSize.width - self.knobOffsetX * 2;
             
             if (p.x < 0 && p.x >= -xx) {
-                CGFloat x = _canvasImage.size.width - _knobImageSize.width - _knobOffsetX * 2 + p.x;
+                CGFloat x = _canvasImage.size.width - _knobImageSize.width - self.knobOffsetX * 2 + p.x;
                 
-                _contentLayer.transform = CATransform3DMakeTranslation(x, 0, 0);
-                _knobLayer.transform = _contentLayer.transform;
+                BMXLAYER.translationX = x;
             }
             
         } else {
-            CGFloat xx = _canvasImage.size.width - _knobOffsetX * 2 - _knobImageSize.width;
+            CGFloat xx = _canvasImage.size.width - self.knobOffsetX * 2 - _knobImageSize.width;
             
             if (p.x > 0 && p.x <= xx) {
                 CGFloat x = p.x;
                 
-                _contentLayer.transform = CATransform3DMakeTranslation(x, 0, 0);
-                _knobLayer.transform = _contentLayer.transform;
+                BMXLAYER.translationX = x;
             }
         }
         
@@ -151,13 +132,10 @@
         }
         
         self.highlighted = NO;
-        [self refreshContentImage];
-        [self refreshKnobImage];
         
         [self sendActionsForControlEvents: UIControlEventValueChanged];
     }
 }
-
 
 #pragma mark - Properties
 
@@ -169,17 +147,29 @@
     [self refreshKnobImage];
 }
 
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted: highlighted];
+    
+    [self refreshContentImage];
+    [self refreshKnobImage];
+}
+
 - (void)setCanvasImage:(UIImage *)canvasImage
 {
     _canvasImage = canvasImage;
-    _topLayer.contents = (__bridge id)(_canvasImage.CGImage);
+
+    [BMXLAYER updateCanvasImage: canvasImage];
+    
+    BMXLAYER.canvasLayer.frame = CGRectMake(0, 0, canvasImage.size.width, canvasImage.size.height);
+    
+    _dragThreshold = (_canvasImage.size.width / 2) * 1 / 3;
 }
 
 - (void)setMaskImage:(UIImage *)maskImage
 {
     _maskImage = maskImage;
-    _mask.contents = (__bridge id)(_maskImage.CGImage);
-    self.layer.mask = _mask;
+    [BMXLAYER updateMaskImage: maskImage];
 }
 
 - (UIImage *)contentImageForState:(UIControlState)state
@@ -197,10 +187,8 @@
         [_contentImages removeObjectForKey: key];
     }
     
-    _contentImageSize = contentImage.size;
-    
     [self refreshContentImage];
-    [self repositionLayers];
+    [self updateContentFrame];
 }
 
 - (UIImage *)knobImageForState:(UIControlState)state
@@ -219,20 +207,26 @@
     }
     
     _knobImageSize = knobImage.size;
+    
+    [self refreshSwitchState];
     [self refreshKnobImage];
-    [self repositionLayers];
+    [self updateKnobFrame];
+    [self updateContentFrame];
 }
 
 - (void)setKnobOffsetX:(CGFloat)knobOffsetX
 {
     _knobOffsetX = knobOffsetX;
-    [self repositionLayers];
+    
+    [self refreshSwitchState];
+    [self updateKnobFrame];
 }
 
 - (void)setKnobOffsetY:(CGFloat)knobOffsetY
 {
     _knobOffsetY = knobOffsetY;
-    [self repositionLayers];
+    [self refreshSwitchState];
+    [self updateKnobFrame];
 }
 
 
@@ -251,29 +245,47 @@
 - (void)setOn:(BOOL)on animated:(BOOL)animated
 {
     _on = on;
-    
-    if (on) {
-        CGFloat x = _canvasImage.size.width - _knobImageSize.width - _knobOffsetX * 2;
-        
-        _contentLayer.transform = CATransform3DMakeTranslation(x, 0, 0);
-        _knobLayer.transform = _contentLayer.transform;
-        
-    } else {
-        _contentLayer.transform = CATransform3DIdentity;
-        _knobLayer.transform = CATransform3DIdentity;
-        
-    }
+    [self refreshSwitchState];
 }
 
 
 #pragma mark - Privates
 
+- (void)refreshSwitchState
+{
+    if (_on) {
+        CGFloat x = self.frame.size.width - _knobImageSize.width - self.knobOffsetX * 2;
+        
+        BMXLAYER.translationX = x;
+        
+    } else {
+        BMXLAYER.translationX = 0;
+        
+    }
+}
+
+- (void)updateKnobFrame
+{
+    UIImage *image = [self knobImageForState: UIControlStateNormal];
+    
+    BMXLAYER.knobLayer.frame = CGRectMake(self.knobOffsetX, self.knobOffsetY, image.size.width, image.size.height);
+}
+
+- (void)updateContentFrame
+{
+    UIImage *image = [self contentImageForState: UIControlStateNormal];
+    
+    CGFloat w = image.size.width;
+    CGFloat h = image.size.height;
+    CGFloat x = (_knobImageSize.width + self.knobOffsetX * 2) / 2 - w / 2;
+    CGFloat y = (_canvasImage.size.height - h) / 2;
+    
+    BMXLAYER.contentLayer.frame = CGRectMake(x, y, w, h);
+}
+
 - (void)refreshKnobImage
 {
     NSNumber *key;
-    
-    [CATransaction begin];
-    [CATransaction setDisableActions: YES];
     
     if (self.enabled) {
         if (self.highlighted) {
@@ -290,17 +302,12 @@
     }
     
     UIImage *image = [_knobImages objectForKey: key];
-    _knobLayer.contents = (__bridge id)(image.CGImage);
-    
-    [CATransaction commit];
+    [BMXLAYER updateKnobImage: image];
 }
 
 - (void)refreshContentImage
 {
     NSNumber *key;
-    
-    [CATransaction begin];
-    [CATransaction setDisableActions: YES];
     
     if (self.enabled) {
         if (self.highlighted) {
@@ -317,29 +324,7 @@
     }
     
     UIImage *image = [_contentImages objectForKey: key];
-    _contentLayer.contents = (__bridge id)(image.CGImage);
-    
-    [CATransaction commit];
-}
-
-- (void)repositionLayers
-{
-    {
-        CGFloat w = _contentImageSize.width;
-        CGFloat h = _contentImageSize.height;
-        CGFloat x = (_knobImageSize.width + _knobOffsetX * 2) / 2 - w / 2;
-        CGFloat y = (_canvasImage.size.height - h) / 2;
-        
-        _contentLayer.frame = CGRectMake(x, y, w, h);
-    }
-    
-    _mask.frame = CGRectMake(0, 0, _maskImage.size.width, _maskImage.size.height);
-
-    {
-        _knobLayer.frame = CGRectMake(_knobOffsetX, _knobOffsetY, _knobImageSize.width, _knobImageSize.height);
-    }
-    
-    _dragThreshold = (_canvasImage.size.width / 2) * 1 / 3;
+    [BMXLAYER updateContentImage: image];
 }
 
 
@@ -351,10 +336,14 @@
     
     self.highlighted = YES;
     
-    [self refreshContentImage];
-    [self refreshKnobImage];
-    
     return result;
+}
+
+- (void)cancelTrackingWithEvent:(UIEvent *)event
+{
+    BOOL high = self.highlighted;
+    [super cancelTrackingWithEvent: event];
+    self.highlighted = high;
 }
 
 @end

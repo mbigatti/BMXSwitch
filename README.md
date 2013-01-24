@@ -4,9 +4,13 @@ An image based replacement for UISwitch that allows to configure each element of
 
 ![Screenshot](https://github.com/mbigatti/BMXSwitch/raw/master/screenshot.png)
 
-The switch is composed overlaying few images
+It allows to fully stylize the appearance of the control with your artwork, for example:
 
-![Schema](https://github.com/mbigatti/BMXSwitch/raw/master/schema.png)
+![TimerApp](https://github.com/mbigatti/BMXSwitch/raw/master/timerapp.png)
+
+The switch is composed overlaying some images:
+
+![Diagram](https://github.com/mbigatti/BMXSwitch/raw/master/diagram.png)
 
 
 ## Installation
@@ -16,22 +20,22 @@ To use BMXSwitch:
 - Copy over the `BMXSwitch` folder to your project folder.
 - Make sure that your project includes the QuartzCore.framework.
 - `#import "BMXSwitch.h"`
+- `#import "BMXSwitchLayer.h"`
 
 ### Example Code
 
 ```objective-c
 BMXSwitch *switch1 = [[BMXSwitch alloc] initWithFrame: frame];
 
-id appearance = [BMXSwitch appearance];
-[appearance setCanvasImage: [UIImage imageNamed: @"canvas"]];
-[appearance setMaskImage: [UIImage imageNamed: @"mask"]];
+[_switch1 setCanvasImage: [UIImage imageNamed: @"canvas"]];
+[_switch1 setMaskImage: [UIImage imageNamed: @"mask"]];
     
-[appearance setContentImage: [UIImage imageNamed: @"content-normal"] forState: UIControlStateNormal];
-[appearance setContentImage: [UIImage imageNamed: @"content-disabled"] forState: UIControlStateDisabled];
+[_switch1 setKnobImage: [UIImage imageNamed: @"knob-normal"] forState: UIControlStateNormal];
+[_switch1 setKnobImage: [UIImage imageNamed: @"knob-high"] forState: UIControlStateHighlighted];
+[_switch1 setKnobImage: [UIImage imageNamed: @"knob-disabled"] forState: UIControlStateDisabled];
     
-[appearance setKnobImage: [UIImage imageNamed: @"knob-normal"] forState: UIControlStateNormal];
-[appearance setKnobImage: [UIImage imageNamed: @"knob-high"] forState: UIControlStateHighlighted];
-[appearance setKnobImage: [UIImage imageNamed: @"knob-disabled"] forState: UIControlStateDisabled];
+[_switch1 setContentImage: [UIImage imageNamed: @"content-normal"] forState: UIControlStateNormal];
+[_switch1 setContentImage: [UIImage imageNamed: @"content-disabled"] forState: UIControlStateDisabled];
 ```
 
 ## Notes

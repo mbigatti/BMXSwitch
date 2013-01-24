@@ -16,6 +16,7 @@
 		50887DF016AD59DD00DFB93E /* knob-normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50887DEA16AD59DD00DFB93E /* knob-normal@2x.png */; };
 		50887DF116AD59DD00DFB93E /* mask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50887DEB16AD59DD00DFB93E /* mask@2x.png */; };
 		50887DF316AD5D6F00DFB93E /* knob-disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50887DF216AD5D6F00DFB93E /* knob-disabled@2x.png */; };
+		50AAB97716B046B400690FAD /* BMXSwitchLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AAB97616B046B400690FAD /* BMXSwitchLayer.m */; };
 		50DDF11616A0330200E3CE73 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DDF11516A0330200E3CE73 /* UIKit.framework */; };
 		50DDF11816A0330200E3CE73 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DDF11716A0330200E3CE73 /* Foundation.framework */; };
 		50DDF11A16A0330300E3CE73 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DDF11916A0330200E3CE73 /* CoreGraphics.framework */; };
@@ -40,6 +41,8 @@
 		50887DEA16AD59DD00DFB93E /* knob-normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "knob-normal@2x.png"; sourceTree = "<group>"; };
 		50887DEB16AD59DD00DFB93E /* mask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mask@2x.png"; sourceTree = "<group>"; };
 		50887DF216AD5D6F00DFB93E /* knob-disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "knob-disabled@2x.png"; sourceTree = "<group>"; };
+		50AAB97516B046B400690FAD /* BMXSwitchLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMXSwitchLayer.h; path = ../../BMXSwitch/BMXSwitchLayer.h; sourceTree = "<group>"; };
+		50AAB97616B046B400690FAD /* BMXSwitchLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BMXSwitchLayer.m; path = ../../BMXSwitch/BMXSwitchLayer.m; sourceTree = "<group>"; };
 		50DDF11116A0330200E3CE73 /* BMXSwitchExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BMXSwitchExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50DDF11516A0330200E3CE73 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		50DDF11716A0330200E3CE73 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -121,6 +124,8 @@
 				50887DE516AD59DD00DFB93E /* Images */,
 				50887DDF16AD47C600DFB93E /* BMXSwitch.h */,
 				50887DE016AD47C600DFB93E /* BMXSwitch.m */,
+				50AAB97516B046B400690FAD /* BMXSwitchLayer.h */,
+				50AAB97616B046B400690FAD /* BMXSwitchLayer.m */,
 				50DDF12416A0330300E3CE73 /* BMXAppDelegate.h */,
 				50DDF12516A0330300E3CE73 /* BMXAppDelegate.m */,
 				50DDF12D16A0330300E3CE73 /* BMXViewController.h */,
@@ -223,6 +228,7 @@
 				50DDF12616A0330300E3CE73 /* BMXAppDelegate.m in Sources */,
 				50DDF12F16A0330300E3CE73 /* BMXViewController.m in Sources */,
 				50887DE116AD47C600DFB93E /* BMXSwitch.m in Sources */,
+				50AAB97716B046B400690FAD /* BMXSwitchLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
