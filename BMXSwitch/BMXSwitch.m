@@ -253,6 +253,8 @@
 
 - (void)refreshSwitchState
 {
+    [self refreshKnobImage];
+
     if (_on) {
         CGFloat x = self.frame.size.width - _knobImageSize.width - self.knobOffsetX * 2;
         
@@ -295,7 +297,11 @@
                 key = [NSNumber numberWithInteger: UIControlStateNormal];
             }
         } else {
-            key = [NSNumber numberWithInteger: UIControlStateNormal];
+            if ([self isOn]) {
+                key = [NSNumber numberWithInteger: UIControlStateSelected];
+            } else {
+                key = [NSNumber numberWithInteger: UIControlStateNormal];
+            }
         }
     } else {
         key = [NSNumber numberWithInteger: UIControlStateDisabled];
