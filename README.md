@@ -27,15 +27,15 @@ To use BMXSwitch:
 ```objective-c
 BMXSwitch *switch1 = [[BMXSwitch alloc] initWithFrame: frame];
 
-[_switch1 setCanvasImage: [UIImage imageNamed: @"canvas"]];
-[_switch1 setMaskImage: [UIImage imageNamed: @"mask"]];
+[switch1 setCanvasImage: [UIImage imageNamed: @"canvas"]];
+[switch1 setMaskImage: [UIImage imageNamed: @"mask"]];
     
-[_switch1 setKnobImage: [UIImage imageNamed: @"knob-normal"] forState: UIControlStateNormal];
-[_switch1 setKnobImage: [UIImage imageNamed: @"knob-high"] forState: UIControlStateHighlighted];
-[_switch1 setKnobImage: [UIImage imageNamed: @"knob-disabled"] forState: UIControlStateDisabled];
+[switch1 setKnobImage: [UIImage imageNamed: @"knob-normal"] forState: UIControlStateNormal];
+[switch1 setKnobImage: [UIImage imageNamed: @"knob-high"] forState: UIControlStateHighlighted];
+[switch1 setKnobImage: [UIImage imageNamed: @"knob-disabled"] forState: UIControlStateDisabled];
     
-[_switch1 setContentImage: [UIImage imageNamed: @"content-normal"] forState: UIControlStateNormal];
-[_switch1 setContentImage: [UIImage imageNamed: @"content-disabled"] forState: UIControlStateDisabled];
+[switch1 setContentImage: [UIImage imageNamed: @"content-normal"] forState: UIControlStateNormal];
+[switch1 setContentImage: [UIImage imageNamed: @"content-disabled"] forState: UIControlStateDisabled];
 ```
 
 ## Notes
