@@ -46,7 +46,6 @@ BMXSwitch *switch1 = [[BMXSwitch alloc] initWithFrame: frame];
 ## Contact
 
 - [Personal website](http://bigatti.it)
-- [GitHub](https://github.com/mbigatti)
 - [Twitter](https://twitter.com/mbigatti)
 
 ## License
